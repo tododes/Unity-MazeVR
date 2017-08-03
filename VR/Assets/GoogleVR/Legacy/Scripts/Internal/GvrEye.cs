@@ -36,7 +36,7 @@ public class GvrEye : MonoBehaviour {
   /// Determines which stereo eye to render, that is, which `EyeOffset` and
   /// `Projection` matrix to use and which half of the screen to render to.
   public GvrViewer.Eye eye;
-
+  
   /// Allows you to flip on or off specific culling mask layers for just this
   /// eye.  The mask is a toggle:  The eye's culling mask is first copied from
   /// the parent mono camera, and then the layers specified here are flipped.
@@ -150,6 +150,10 @@ public class GvrEye : MonoBehaviour {
       }
     }
   }
+
+    void LateUpdate(){
+
+    }
 
   private void SetupStereo(bool forceUpdate) {
     GvrViewer.Instance.UpdateState();

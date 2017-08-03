@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Controller : MonoBehaviour {
 
@@ -14,6 +15,9 @@ public class Controller : MonoBehaviour {
     private Ray ray;
     private Vector3 rotateRate;
 
+    [SerializeField]
+    private List<Transform> transforms = new List<Transform>();
+
 	// Use this for initialization
 	void Start () {
         walking = true;
@@ -24,7 +28,7 @@ public class Controller : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
         if (!cam)
         {
@@ -36,16 +40,8 @@ public class Controller : MonoBehaviour {
             transform.position = transform.position + cam.transform.forward * Time.deltaTime;
         }
 
-        rotVector.x = rotVector.z = posVector.y = 0f;
-        rotVector.y = cam.transform.eulerAngles.y;
-        posVector.x = transform.position.x;
-        posVector.z = transform.position.z;
-        transform.position = posVector;
-        cam.transform.eulerAngles = rotVector;
-
         ray.origin = Camera.main.transform.position;
         ray.direction = Camera.main.transform.forward;
-
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 0.5f))
         {
@@ -57,8 +53,23 @@ public class Controller : MonoBehaviour {
         }
         else
             walking = true;
+    }
+
+    void LateUpdate(){
+        rotVector.x = rotVector.z = posVector.y = 0f;
+        rotVector.y = cam.transform.eulerAngles.y;
+        posVector.x = transform.position.x;
+        posVector.z = transform.position.z;
+        transform.position = posVector;
+        cam.transform.eulerAngles = rotVector;
+
+        //cam.transform.eulerAngles = new Vector3(0, cam.transform.eulerAngles.y, 0);
+        for(int i = 0; i < transforms.Count; i++){
+            transforms[i].eulerAngles = new Vector3(0, transforms[i].eulerAngles.y, 0);
+        }
 
         rotateRate.y = 45f * Input.GetAxis("Horizontal") * Time.deltaTime;
         transform.eulerAngles += rotateRate;
+
     }
 }
