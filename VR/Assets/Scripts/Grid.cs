@@ -5,15 +5,20 @@ using System.Collections.Generic;
 public class Grid : MonoBehaviour {
 
     public int X, Y;
+    public int gCost, hCost;
     public int gridState;
     public bool visited;
 
     private MeshRenderer meshRenderer;
     private Collider coll;
 
-    public Grid parent;
+    public Grid parent, childNeighbour;
     public List<Grid> neighbours = new List<Grid>();
     public List<Grid> connectors = new List<Grid>();
+
+    public int fCost { get { return gCost + hCost; } }
+    public bool walkable;
+
 
     void Start()
     {
@@ -21,9 +26,11 @@ public class Grid : MonoBehaviour {
         meshRenderer = GetComponent<MeshRenderer>();
         coll = GetComponent<Collider>();
 
-        if(gridState == 1)
-        {
+        if(gridState == 1){
             Disable();
+        }
+        else if (gridState == 2){
+            Enable();
         }
     }
 
@@ -32,7 +39,24 @@ public class Grid : MonoBehaviour {
         if (meshRenderer)
             meshRenderer.enabled = true;
         if (coll)
-            coll.enabled = true;
+            coll.isTrigger = false;
+        walkable = false;
+        MazeGenerator.singleton.AddWalledGridToList(this);
+        MazeGenerator.singleton.RemoveUnwalledGridToList(this);
+    }
+
+    public void SemiEnable()
+    {
+        if (meshRenderer)
+        {
+            meshRenderer.enabled = true;
+            meshRenderer.material.color = Color.green;
+        }
+        if (coll)
+            coll.isTrigger = true;
+        walkable = true;
+        MazeGenerator.singleton.AddWalledGridToList(this);
+        MazeGenerator.singleton.RemoveUnwalledGridToList(this);
     }
 
     public void Disable()
@@ -40,7 +64,10 @@ public class Grid : MonoBehaviour {
         if (meshRenderer)
             meshRenderer.enabled = false;
         if (coll)
-            coll.enabled = false;
+            coll.isTrigger = true;
+        walkable = true;
+        MazeGenerator.singleton.RemoveWalledGridToList(this);
+        MazeGenerator.singleton.AddUnwalledGridToList(this);
     }
 
     public void AddNeighbour(Grid g)
@@ -51,5 +78,13 @@ public class Grid : MonoBehaviour {
     public void AddConnector(Grid g)
     {
         connectors.Add(g);
+    }
+
+    public List<Grid> getNeighbour(){
+        return neighbours;
+    }
+
+    public void ResetPathStatus(){
+        gCost = hCost = 99999;
     }
 }

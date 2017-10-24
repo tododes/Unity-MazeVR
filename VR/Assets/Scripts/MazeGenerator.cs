@@ -4,18 +4,51 @@ using System.Collections.Generic;
 
 public class MazeGenerator : MonoBehaviour {
 
+    public static MazeGenerator singleton { get; private set; }
+
     [SerializeField] private GameObject tile;
     [SerializeField] private Vector2 Area;
     [SerializeField] private Vector3 spawnPos;
 
-    private bool mazeGenerated;
+    private bool mazeGenerated, pathGenerated;
 
     private Grid[,] grids;
 
     [SerializeField] private List<Grid> frontiers = new List<Grid>();
+    [SerializeField] private List<Grid> walledGrid = new List<Grid>();
+    [SerializeField] private List<Grid> unwalledGrid = new List<Grid>();
+
+    public Grid getFinishingGrid(){
+        return grids[(int)Area.x - 2, (int)Area.y - 2];
+    }
+
+    public void UnlockFinishTile() {
+        foreach(Grid g in walledGrid){
+            g.Disable();
+        }
+    }
+
+    public void AddWalledGridToList(Grid grid){
+        walledGrid.Add(grid);
+    }
+
+    public void RemoveWalledGridToList(Grid grid){
+        if(walledGrid.Contains(grid))
+            walledGrid.Remove(grid);
+    }
+
+    public void AddUnwalledGridToList(Grid grid){
+        unwalledGrid.Add(grid);
+    }
+
+    public void RemoveUnwalledGridToList(Grid grid){
+        if (unwalledGrid.Contains(grid))
+            unwalledGrid.Remove(grid);
+    }
 
     void Awake()
     {
+        singleton = this;
         grids = new Grid[(int)Area.x, (int)Area.y];
         spawnPos = new Vector3(0, 0, 0);
         for (int i = 0; i < Area.x; i++) 
@@ -70,6 +103,7 @@ public class MazeGenerator : MonoBehaviour {
             }
         }
 
+       
     }
 
 	// Use this for initialization
@@ -78,29 +112,18 @@ public class MazeGenerator : MonoBehaviour {
       
     }
 
-    //public bool isAllVisited()
-    //{
-    //    for (int i = 1; i <= Area.x - 2; i += 2)
-    //    {
-    //        for (int j = 1; j <= Area.y - 2; j += 2)
-    //        {
-    //            if (!grids[i, j].visited)
-    //                return false;
-    //        }
-    //    }
-    //    return true;
-    //}
-	
-	// Update is called once per frame
 	void Update ()
     {
-        if (!mazeGenerated)
-        {
+        if (!mazeGenerated){
             GenerateMaze(grids[1, 1]);
-            //stack.Travel(grids[1, 1]);
             mazeGenerated = true;
+            QuestController.singleton.Initialize(unwalledGrid);
         }
-           
+        if (!pathGenerated){
+            Debug.Log("Path initialize");
+            PathGenerator.singleton.Initialize(grids[1,1], grids[(int)Area.x - 2, (int)Area.y - 2]);
+            pathGenerated = true;
+        }
 	}
 
     void GenerateMaze(Grid initial)
@@ -126,5 +149,13 @@ public class MazeGenerator : MonoBehaviour {
                 current.parent.neighbours[current.parent.connectors.IndexOf(current)].Disable();
             }
         }
+    }
+
+    public List<Grid> getUnwalledGridList(){
+        return unwalledGrid;
+    }
+
+    public List<Grid> getWalledGridList(){
+        return walledGrid;
     }
 }

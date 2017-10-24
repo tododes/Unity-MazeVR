@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour {
 
+    public static Controller singleton { get; private set; }
+
     public GameObject ground;
     [SerializeField] private bool walking;
 
@@ -15,8 +17,15 @@ public class Controller : MonoBehaviour {
     private Ray ray;
     private Vector3 rotateRate;
 
-    [SerializeField]
-    private List<Transform> transforms = new List<Transform>();
+    [SerializeField] private Grid currentGrid;
+    [SerializeField] private List<Transform> transforms = new List<Transform>();
+    [SerializeField] private int KeyOrbAmount;
+
+    private List<PlayerObserver> observers = new List<PlayerObserver>();
+
+    void Awake() {
+        singleton = this;
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -25,18 +34,25 @@ public class Controller : MonoBehaviour {
         rotVector = new Vector3(0f, 1f, 0f);
         ray = new Ray();
         rotateRate = new Vector3(0, 0, 0);
+
+        observers.Add(GameObject.Find("Key Orb Text").GetComponent<KeyOrbText>());
+        letObserversObserveMe();
 	}
+
+    public Grid getCurrentGrid() { return currentGrid; }
+    public void setCurrentGrid(Grid g) { currentGrid = g; }
+
+    public int getKeyOrbAmount() { return KeyOrbAmount; }
+    public void AddKeyOrb() { KeyOrbAmount++; }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 
-        if (!cam)
-        {
+        if (!cam){
             cam = Camera.main;
         }
 
-        if (walking)
-        {
+        if (walking){
             transform.position = transform.position + cam.transform.forward * Time.deltaTime;
         }
 
@@ -45,7 +61,6 @@ public class Controller : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 0.5f))
         {
-            Debug.Log(hit.collider.name);
             if (hit.collider.name.Contains("plane") || hit.collider.name.Contains("GRID"))
                 walking = false;
             else
@@ -71,5 +86,37 @@ public class Controller : MonoBehaviour {
         rotateRate.y = 45f * Input.GetAxis("Horizontal") * Time.deltaTime;
         transform.eulerAngles += rotateRate;
 
+    }
+
+    void OnTriggerEnter(Collider coll){
+        Interactable interactedCollider = coll.GetComponent<Interactable>();
+        if (interactedCollider){
+            interactedCollider.OnInteract(this);
+            letObserversObserveMe();
+        }
+    }
+
+    private void letObserversObserveMe(){
+        for(int i = 0; i < observers.Count; i++){
+            observers[i].observe(this);
+        }
+    }
+
+    void OnTriggerExit(Collider coll)
+    {
+        Interactable interactedCollider = coll.GetComponent<Interactable>();
+        if (interactedCollider)
+        {
+            interactedCollider.OnContinuouslyInteract(this);
+        }
+    }
+
+    void OnTriggerStay(Collider coll)
+    {
+        Interactable interactedCollider = coll.GetComponent<Interactable>();
+        if (interactedCollider)
+        {
+            interactedCollider.OnStopInteract(this);
+        }
     }
 }
