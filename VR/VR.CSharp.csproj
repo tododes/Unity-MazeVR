@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AudioController.cs" />
     <Compile Include="Assets\Gems Ultimate Pack\Scripts\AnimationScript.cs" />
     <Compile Include="Assets\GoogleVR\Demos\Scripts\DemoInputManager.cs" />
     <Compile Include="Assets\GoogleVR\Demos\Scripts\DemoSceneManager.cs" />
@@ -244,6 +245,8 @@
     <Compile Include="Assets\PostProcessing\Runtime\Utils\GraphicsUtils.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
+    <Compile Include="Assets\Scripts\Bar.cs" />
+    <Compile Include="Assets\Scripts\BarPoint.cs" />
     <Compile Include="Assets\Scripts\Controller.cs" />
     <Compile Include="Assets\Scripts\Diamond.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyAttack.cs" />
@@ -252,7 +255,10 @@
     <Compile Include="Assets\Scripts\EnemyController.cs" />
     <Compile Include="Assets\Scripts\EyeController.cs" />
     <Compile Include="Assets\Scripts\FinishTile.cs" />
+    <Compile Include="Assets\Scripts\GazedEntity.cs" />
+    <Compile Include="Assets\Scripts\Gazer.cs" />
     <Compile Include="Assets\Scripts\Grid.cs" />
+    <Compile Include="Assets\Scripts\InterSceneImage.cs" />
     <Compile Include="Assets\Scripts\Interactable.cs" />
     <Compile Include="Assets\Scripts\KeyOrb.cs" />
     <Compile Include="Assets\Scripts\KeyOrbText.cs" />
@@ -260,6 +266,7 @@
     <Compile Include="Assets\Scripts\Managers\GameOverManager.cs" />
     <Compile Include="Assets\Scripts\Managers\ScoreManager.cs" />
     <Compile Include="Assets\Scripts\MazeGenerator.cs" />
+    <Compile Include="Assets\Scripts\MenuZombieDoll.cs" />
     <Compile Include="Assets\Scripts\PathGenerator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerHealth.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
@@ -267,6 +274,7 @@
     <Compile Include="Assets\Scripts\PlayerObserver.cs" />
     <Compile Include="Assets\Scripts\QuestController.cs" />
     <Compile Include="Assets\Scripts\Teleporter.cs" />
+    <Compile Include="Assets\Scripts\UpDownText.cs" />
     <Compile Include="Assets\Scripts\WalkablePath.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\_Complete-Game\MobileInput\Scripts\CrossPlatformInputManager.cs" />
